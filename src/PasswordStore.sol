@@ -10,7 +10,12 @@ pragma solidity 0.8.18;
 contract PasswordStore {
     error PasswordStore__NotOwner();
 
+    ////////////////////////////////////////////////////
+    //                STATE Variables                //
+    ///////////////////////////////////////////////////
     address private s_owner;
+    // @audit the s_passowrd variable is not actually private! This not a safe place to secure your password!
+    // private means contracts can not read it but human can read it
     string private s_password;
 
     event SetNewPassword();
@@ -32,6 +37,8 @@ contract PasswordStore {
      * @notice This allows only the owner to retrieve the password.
      * @param newPassword The new password to set.
      */
+    // @audit any user cna set a password
+    // missing access control
     function getPassword() external view returns (string memory) {
         if (msg.sender != s_owner) {
             revert PasswordStore__NotOwner();
